@@ -39,9 +39,7 @@ jobs:
         run: |
           echo "Running Node scripts..."
           node scripts/your-node-script.js
-          node scripts/api-push.js
-
-      # 6️⃣ Docker build & push (main branch only)
+          node scripts/api-push.js 6️⃣ Docker build & push (main branch only)
       - name: Docker Build & Push
         if: github.ref == 'refs/heads/main'
         run: |
