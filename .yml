@@ -1,0 +1,35 @@
+name: Build & Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Test Alchemy API
+        env:
+          ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
+        run: |
+          node -e "
+          const { Alchemy, Network } = require('@alch/alchemy-sdk');
+          const settings = { apiKey: process.env.ALCHEMY_API_KEY, network: Network.ETH_MAINNET };
+          const alchemy = new Alchemy(settings);
+          alchemy.core.getBlockNumber()
+            .then(n => console.log('Latest block:', n))
+            .catch(console.error);
+          "
