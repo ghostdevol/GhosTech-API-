@@ -1,18 +1,14 @@
 // src/core/engine.js
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
-// Correct path to your modules folder
-const modulesPath = path.join(__dirname, "..", "modules");
+const modulesPath = path.join(__dirname, '..', 'modules');
 let loadedModules = {};
 
-// Dynamically load all .js modules
 fs.readdirSync(modulesPath).forEach(file => {
-  if (file.endsWith(".js")) {
+  if (file.endsWith('.js')) {
     const mod = require(path.join(modulesPath, file));
-    if (mod.name) {
-      loadedModules[mod.name] = mod;
-    }
+    if (mod.name) loadedModules[mod.name] = mod;
   }
 });
 

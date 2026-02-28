@@ -1,41 +1,41 @@
+// src/index.js
 const express = require('express');
 const { Alchemy, Network } = require('@alch/alchemy-sdk');
 
 const app = express();
 const port = 3000;
 
+// Alchemy settings
 const settings = {
-    apiKey: process.env.ALCHEMY_API_KEY || 'YOUR_ALCHEMY_KEY',
-        network: Network.ETH_MAINNET,
-        };
+  apiKey: process.env.ALCHEMY_API_KEY || 'YOUR_ALCHEMY_KEY_HERE',
+  network: Network.ETH_MAINNET
+};
 
-        const alchemy = new Alchemy(settings);
+const alchemy = new Alchemy(settings);
 
-        app.use(express.json());
+app.use(express.json());
 
-        app.get('/status', (req, res) => {
-            res.json({ status: 'GhosTech API online!' });
-            });
+// Basic API status endpoint
+app.get('/status', (req, res) => {
+  res.json({
+    status: 'GhosTech API online',
+    engine: 'v1.0',
+    message: 'Awaiting commands'
+  });
+});
 
-            app.get('/latest-block', async (req, res) => {
-                try {
-                        const blockNumber = await alchemy.core.getBlockNumber();
-                                res.json({ blockNumber });
-                                    } catch (err) {
-                                            res.status(500).json({ error: err.message });
-                                                }
-                                                });
+// Get latest block from Alchemy
+app.get('/latest-block', async (req, res) => {
+  try {
+    const blockNumber = await alchemy.core.getBlockNumber();
+    res.json({ latestBlock: blockNumber });
+  } catch (err) {
+    console.error('Alchemy error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch latest block' });
+  }
+});
 
-                                                app.get('/balance/:address', async (req, res) => {
-                                                    const { address } = req.params;
-                                                        try {
-                                                                const balance = await alchemy.core.getBalance(address);
-                                                                        res.json({ address, balance: balance.toString() });
-                                                                            } catch (err) {
-                                                                                    res.status(500).json({ error: err.message });
-                                                                                        }
-                                                                                        });
-
-                                                                                        app.listen(port, () => {
-                                                                                            console.log(`GhosTech API running at http://localhost:${port}`);
-                                                                                            });
+// Start server
+app.listen(port, () => {
+  console.log(`🚀 GhosTech API (Alchemy) running on port ${port}`);
+});
